@@ -19,6 +19,7 @@ export const cookieOptions = {
     maxAge: 15*24*60*60*1000,
     sameSite:"none",
     httpOnly: true,
+    //yadi hume thunderclient me cookie ko access krna h toh hum secure: true ko hta dege.
     secure: true,
 }
 
@@ -33,9 +34,11 @@ export const sendToken = (res, user, code, message) => {
 }
 
 export const emitEvent = (req, event,users, data) => {
-    //io ka instance bnaya h app.ja me toh us se io le rhe h.
+    //io ka instance bnaya h app.js me toh us se io le rhe h.
     let io = req.app.get("io");
+    //iski help se hum group k sbhi members ki socket id lege
     const usersSocket = getSockets(users);
+    //toh iski help se hum un sbhi users k pass data bhej skte h jo ki usersSocket me h
     io.to(usersSocket).emit(event, data);
 };
 
@@ -71,6 +74,14 @@ export const uploadFilesToCloudinary = async (files=[]) => {
     }
 }
 
-export const deleteFilesFromCloudinary = async(req, res, next) => {
-    //delete files from cloudinary
+export const deleteFilesFromCloudinary = async(publicIds)=>{
+    try{
+        const deletePromises = publicIds.map((publicId)=>cloudinary.uploader.destroy(publicId));
+        await Promise.all(deletePromises);
+        console.log("Files deleted successfully");
+    }
+    catch(error){
+        console.log("Error deleting files from cloudinary:", error);
+        throw new Error("Error deleting files to cloudinary", error);
+    }
 }

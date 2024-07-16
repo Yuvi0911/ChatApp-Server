@@ -6,6 +6,8 @@ import { User } from "../models/user.js";
 // import { User } from "../models/user.js";
 
 const isAuthenticated = TryCatch((req,res,next)=>{
+    //hum yha pr jo cookie me se token ko access kr pa rhe h vo cookie-parser package ki help se access kr pa rhe h.
+    //yadi mujhe cookie me se token ko access krna h thundeclient me toh mujhe register aur login krte time cookie options me secure: true diya h ushe htana pdega aur yadi frontend se us token ko set aur access krna h cookie me toh mujhe secure: true ko lgana pdega.
     const token = req.cookies["ChatApp-token"];
 
     if(!token) return next(new ErrorHandler("Please login to access this route",401));
